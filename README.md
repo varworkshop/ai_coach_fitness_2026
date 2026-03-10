@@ -31,7 +31,7 @@ pip install -r requirements.txt
 This environment was tested on a single A100 and uses CUDA 12.4. Please update based on hardware/software setup. To enable faster inference/eval with flash-attn it is recommended to create a docker image and/or install flash-attn from source.
 
 ### Extract Video Frames
-`DATA_ROOT` should point to the specific split under `DOWNLOADS_ROOT`, e.g., `DATA_ROOT = f"{DOWNLOADS_ROOT}/QEVD-FIT-COACH-Benchmark"`. You can specifiy the fps, here we choose 2 for the Qwen3-VL-Instruct baseline. 
+`DATA_ROOT` should point to the specific split under `DOWNLOADS_ROOT`, e.g., `DATA_ROOT = f"{DOWNLOADS_ROOT}/QEVD-FIT-COACH-Benchmark"`. You can specify the fps, here we choose 2 for the Qwen3-VL-Instruct baseline. 
 ```
 python extract_frames.py \
 	--dataset_root <DATA_ROOT> \
