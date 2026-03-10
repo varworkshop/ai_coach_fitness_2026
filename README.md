@@ -3,7 +3,7 @@
 Here we provide the code to load and preprocess the QEVD-FIT-COACH(-Benchmark) benchmark and dataset for the AI Coach Challenge: Fitness at the [VAR Workshop @ CVPR 2026](https://varworkshop.github.io/challenges/). We also provide code to implement a simple Qwen3-VL-2B-Instruct baseline and evaluate it's predictions.
 
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/1e21d79e-9da0-4e96-baf6-fb0b27807c7c" width="80%" controls></video>
+  <video src="https://github.com/user-attachments/assets/1e21d79e-9da0-4e96-baf6-fb0b27807c7c" autoplay muted loop playsinline controls width="80%" controls></video>
 </p>
 
 [**What to Say and When to Say it: Live Fitness Coaching as a Testbed for Situated Interaction (NeurIPS 2024 D&B Track)**](https://arxiv.org/pdf/2407.08101)
