@@ -1,6 +1,6 @@
 # AI Coach Challenge: Fitness (VAR Workshop @ CVPR 2026)
 
-Here we provide the code to load and preprocess the QEVD-FIT-COACH(-Benchmark) benchmark and dataset for the AI Coach Challenge: Fitness at the VAR Workshop @ CVPR 2026. We also provide code to implement a simple Qwen3-VL-2B-Instruct baseline and evaluate it's predictions.
+Here we provide the code to load and preprocess the QEVD-FIT-COACH(-Benchmark) benchmark and dataset for the AI Coach Challenge: Fitness at the [VAR Workshop @ CVPR 2026](https://varworkshop.github.io/challenges/). We also provide code to implement a simple Qwen3-VL-2B-Instruct baseline and evaluate it's predictions.
 
 <p align="center">
   <video src="YOUR_GENERATED_URL" width="80%" controls></video>
@@ -10,18 +10,28 @@ Here we provide the code to load and preprocess the QEVD-FIT-COACH(-Benchmark) b
 
 ## Running the Code
 
-First download and extract the QEVD-FIT-COACH(-Benchmark/Competition) [here](https://www.qualcomm.com/developer/software/qevd-dataset/downloads) to `DATA_ROOT`. Links to splits:
-- [Train](https://softwarecenter.qualcomm.com/api/download/software/dataset/AIDataset/Qualcomm_Exercise_Video_Dataset/QEVD-FIT-COACH/QEVD-FIT-COACH.zip).
-- [Benchmark](https://softwarecenter.qualcomm.com/api/download/software/dataset/AIDataset/Qualcomm_Exercise_Video_Dataset/QEVD-FIT-COACH-Benchmark/QEVD-FIT-COACH-Benchmark.zip).
+First download and extract the QEVD-FIT-COACH(-Benchmark/Competition) [here](https://www.qualcomm.com/developer/software/qevd-dataset/downloads) to `DOWNLOADS_ROOT`. Links to splits:
+- [Train](https://softwarecenter.qualcomm.com/api/download/software/dataset/AIDataset/Qualcomm_Exercise_Video_Dataset/QEVD-FIT-COACH/QEVD-FIT-COACH.zip)
+- [Benchmark](https://softwarecenter.qualcomm.com/api/download/software/dataset/AIDataset/Qualcomm_Exercise_Video_Dataset/QEVD-FIT-COACH-Benchmark/QEVD-FIT-COACH-Benchmark.zip)
 - [VAR Competition](https://softwarecenter.qualcomm.com/api/download/software/dataset/AIDataset/Qualcomm_Exercise_Video_Dataset/QEVD-FIT-COACH-Competition-CVPR2025/QEVD-FIT-COACH-Competition-CVPR2025.zip)
 
-
-The `DATA_ROOT` folder should contain the following:
+After extraction the `DOWNLOADS_ROOT` folder should contain the extracted files under the folders: `QEVD-FIT-COACH`, `QEVD-FIT-COACH-Benchmark`, `QEVD-FIT-COACH-Competition-CVPR2025` (You can choose to download one/all of the splits). Each of these folders should contain the following:
 - *feedbacks_long_range.json*: The json file containing the annotations. Details [here](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/QSC-QEVD-FIT-COACH-Dataset-Download-Instructions.pdf).
 - *long_range_videos*: Folder containing the videos and the associated timestamps when each frame was recorded.
 
+### Create New Environment
+Create a conda environment using the following commands,
+```
+conda create --name <env_name> python=3.11.10
+conda activate <env_name>
+conda install bert_score rouge-score tqdm -c conda-forge
+pip3 install --upgrade torch torchvision --index-url https://download.pytorch.org/whl/cu124
+pip install -r requirements.txt
+```
+This environment was tested on a single A100 and uses CUDA 12.4. Please update based on hardware/software setup. To enable faster inference/eval with flash-attn it is recommended to create a docker image and/or install flash-attn from source.
+
 ### Extract Video Frames
-You can specifiy the fps, here we choose 2 for the Qwen3-VL-Instruct baseline.
+`DATA_ROOT` should point to the specific split under `DOWNLOADS_ROOT`, e.g., `DATA_ROOT = f"{DOWNLOADS_ROOT}/QEVD-FIT-COACH-Benchmark"`. You can specifiy the fps, here we choose 2 for the Qwen3-VL-Instruct baseline. 
 ```
 python extract_frames.py \
 	--dataset_root <DATA_ROOT> \
