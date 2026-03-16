@@ -10,3 +10,4 @@ Pillow
 opencv-python
 tqdm
 nltk
+json-repair
