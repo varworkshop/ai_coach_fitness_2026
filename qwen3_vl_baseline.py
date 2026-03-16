@@ -1,12 +1,14 @@
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import torch
 import json
 import os
 import ast
+import re
 import numpy as np
 import argparse
 
 from tqdm import tqdm
+from json_repair import repair_json
 from torch.utils.data import Dataset
 
 from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
@@ -24,6 +26,12 @@ def parse_args() -> argparse.Namespace:
         help="Path to the dataset root directory"
     )
     parser.add_argument(
+        "--model_id",
+        type=str,
+        default="Qwen/Qwen3-VL-2B-Instruct",
+        help="Model ID to load from HuggingFace"
+    )
+    parser.add_argument(
         "--model_fps",
         type=int,
         default=2,
@@ -38,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--llm_max_new_tokens",
         type=int,
-        default=128,
+        default=1024,
         help="Maximum number of new tokens for the LLM"
     )
     parser.add_argument(
@@ -120,7 +128,7 @@ def get_feedback_from_qwen(
     processor: AutoProcessor,
     video: np.ndarray,
     exercise_name: str,
-    max_new_tokens: int = 256
+    max_new_tokens: int = 1024
 ) -> str:
     messages: list[dict] = [
         {
@@ -181,11 +189,19 @@ def get_feedback_from_qwen(
     )
     
     return_dict = output_text[0]
-    try:
-        return_dict = ast.literal_eval(return_dict)
-        return return_dict["feedback"]
-    except:
-        return None
+    
+    # Make sure json is formed correctly
+    return_dict = re.sub(r"^```(?:json)?\s*", "", return_dict.strip(), flags=re.IGNORECASE)
+    return_dict = re.sub(r"\s*```$", "", return_dict.strip())
+    
+    # Attempt repair for truncated/malformed output
+    repaired = repair_json(return_dict, return_objects=True)
+    if isinstance(repaired, dict):
+        try:
+            return repaired['feedback']
+        except ValueError:
+            pass
+    return ""
 
 def get_predictions(
     model: Qwen3VLForConditionalGeneration,
@@ -196,7 +212,7 @@ def get_predictions(
     resolution: int = 384, # input video resolution
     width: int = None,
     height: int = None
-):
+) -> List[Dict[str, str | List[str] | List[float]]]:
     # init ds
     predictions = []
     
@@ -266,7 +282,7 @@ def get_predictions(
     return predictions
 
 def run_pred(args: argparse.Namespace):
-    model, processor = load_modal_and_processor()
+    model, processor = load_modal_and_processor(model_id=args.model_id)
     dataset = load_dataset(args.data_root, args.model_fps)
     predictions = get_predictions(
         model,
