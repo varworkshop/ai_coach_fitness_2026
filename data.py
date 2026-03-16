@@ -10,7 +10,7 @@ from utils import load_video_timestamps
 
 class FitCoachDatset(Dataset):
     """
-    A PyTorch Dataset class for the FitCoach benchmark dataset.
+    A PyTorch Dataset class for the FitCoach dataset.
 
     This dataset handles long-range fitness coaching videos that are split into
     mini episodes, each corresponding to a specific exercise. It manages video
@@ -601,3 +601,14 @@ class FitCoachDatset(Dataset):
                                                                             was set during initialization.
         """
         return self.mini_episode_data[video_idx]
+
+
+if __name__ == "__main__":
+    data_root = "/prj/corp/crd/morpheus/lasvegas/neural-reasoning/users/aprabhat/downloaded_fitcoach_dataset/QEVD-FIT-COACH-Benchmark"
+    model_fps = 2
+    ds = FitCoachDatset(
+        data_root,
+        model_fps,
+        load_video_frame_paths = True
+    )
+    ds[0]
