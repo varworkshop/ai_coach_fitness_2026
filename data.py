@@ -541,24 +541,6 @@ class FitCoachDatset(Dataset):
 
         print("Done!")
 
-    def load_video_frame_paths_comnpetition(self, video_frames_root: str) -> None:
-        """
-        Load and cache video frame file paths for each mini episode in the competition split.
-
-        This method is intended to mirror the functionality of `load_video_frame_paths` but
-        adapted for the competition split format. It is currently a placeholder and will
-        trigger a breakpoint when called, indicating it has not yet been fully implemented.
-
-        Args:
-            video_frames_root (str): Root directory containing subdirectories for each
-                                      video, which in turn contain the extracted frame
-                                      image files.
-
-        Returns:
-            None
-        """
-        breakpoint()
-
     def __len__(self,) -> int:
         """
         Return the total number of mini episodes in the dataset.
