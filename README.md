@@ -31,7 +31,7 @@ pip install -r requirements.txt
 This environment was tested on a single A100 and uses CUDA 12.4. Please update based on hardware/software setup. To enable faster inference/eval with flash-attn it is recommended to create a docker image and/or install flash-attn from source.
 
 ### Extract Video Frames
-`DATA_ROOT` should point to the specific split under `DOWNLOADS_ROOT`, e.g., `DATA_ROOT = f"{DOWNLOADS_ROOT}/QEVD-FIT-COACH-Benchmark"`. You can specify the fps, here we choose 2 for the Qwen3-VL-Instruct baseline. 
+`DATA_ROOT` should point to the specific split under `DOWNLOADS_ROOT`, e.g., `DATA_ROOT = f"{DOWNLOADS_ROOT}/QEVD-FIT-COACH-Benchmark"`. You can specifiy the fps, here we choose 2 for the Qwen3-VL baseline. 
 ```
 python extract_frames.py \
 	--dataset_root <DATA_ROOT> \
@@ -43,7 +43,7 @@ This extracts the video frames at 2 fps to the folder `long_range_video_frames_2
 We provide an simplified dataloader in `data.py` that is built upon the official dataloader [here](https://github.com/Qualcomm-AI-research/FitCoach/blob/main/src/fitness_datasets/fitcoach.py). You can switch between the train/benchmark/competition splits by specifying the appropriate data folder (`DATA_ROOT`).
 
 ### Run Qwen3-VL Baseline
-You can run the simple Qwen3-VL-2B-Instruct baseline that provides feedbacks every 5 seconds using,
+You can run the simple Qwen3-VL-2B-Instruct baseline that provides feedbacks every 5 seconds using o the benchmark set using,
 ```
 export HF_HOME=<path to your hf cache>
 python qwen3_vl_baseline.py \
@@ -51,8 +51,10 @@ python qwen3_vl_baseline.py \
 ```
 The `qwen3_vl_baseline.py` script will save a file `predictions.json` to the folder `./predictions` by default. You can control where to save this file using the flags  `--predictions_save_root` and `--predictions_file_name`.
 
+You can switch to any other Qwen3-VL model using the `--model_id` argument.
+
 ### Run Evaluation
-You can evaluate the baseline predictions at `./predictions/predictions.json` using,
+You can evaluate the baseline predictions on the benchmark set at `./predictions/predictions.json` using,
 ```
 export HF_HOME=<path to your hf cache>
 python eval.py \
@@ -60,6 +62,12 @@ python eval.py \
     --results_file ./predictions/predictions.json
 ```
 The evaluation is based on the official code [here](https://github.com/Qualcomm-AI-research/FitCoach/blob/main/scripts/evaluate_baseline.py).
+
+For the Qwen3-VL baselines, you should get the following results: 
+| Model                | METEOR↑ | ROUGE-L↑ | BERT↑ | LLM-Acc.↑ | T-F-Score↑ |
+|----------------------|---------|----------|-------|-----------|------------|
+| Qwen3-VL-2B-Instruct | 0.156   | 0.091    | 0.859 | 2.772     | 0.487      |
+| Qwen3-VL-8B-Instruct | 0.127   | 0.070    | 0.840 | 2.720     | 0.487      |
 
 ## Citation
 
