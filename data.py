@@ -28,7 +28,8 @@ class FitCoachDatset(Dataset):
         self, 
         data_root: str, 
         model_fps: int = 2,
-        load_video_frame_paths: bool = False
+        load_video_frame_paths: bool = False,
+        remove_transition_feedbacks: bool = True
     ) -> None:
         """
         Initialize the FitCoachDataset.
@@ -43,6 +44,8 @@ class FitCoachDatset(Dataset):
         """
         self.data_root = data_root
         self.model_fps = model_fps
+        # transition feedbacks need to removed for evaluation
+        self.remove_transition_feedbacks = remove_transition_feedbacks
 
         annotation_file_path = os.path.join(data_root,"feedbacks_long_range.json")
         if "competition" in self.data_root.lower():
@@ -184,11 +187,12 @@ class FitCoachDatset(Dataset):
             mini_episode_feedback_timestamps.append(feedback_timestamps[start_idx:end_idx])
             start_idx = end_idx
 
-        mini_episode_feedbacks = mini_episode_feedbacks[:-1]
-
         # Keep rolling the last mini episode till the end of the video
         assert len(mini_episode_feedback_timestamps[-1]) == 1
         last_mini_episode_end_timestamp = mini_episode_feedback_timestamps[-1][0]
+
+        # remove the last session end feedback
+        mini_episode_feedbacks = mini_episode_feedbacks[:-1]
         mini_episode_feedback_timestamps = mini_episode_feedback_timestamps[:-1]
 
         return mini_episode_feedbacks, mini_episode_feedback_timestamps, last_mini_episode_end_timestamp
@@ -358,7 +362,9 @@ class FitCoachDatset(Dataset):
             # split feedbacks per mini episode
             mini_episode_feedbacks, mini_episode_feedback_timestamps, last_mini_episode_end_timestamp = \
             self.split_feedbacks_into_mini_episodes(
-                feedbacks, feedback_timestamps, is_transition
+                feedbacks, 
+                feedback_timestamps, 
+                is_transition
             )
 
             # get timestamps of video frames corresponding to each mini episode
@@ -376,6 +382,17 @@ class FitCoachDatset(Dataset):
                 _mini_episode_feedback_timestamps = mini_episode_feedback_timestamps[idx]
                 _mini_episode_video_frame_timestamps = mini_episode_video_frame_timestamps[idx]
                 _mini_episode_id = f"{video_id}_{idx}"
+
+                if self.remove_transition_feedbacks:
+                    # the first feedback is a transition feedback
+                    _mini_episode_feedbacks = _mini_episode_feedbacks[1:]
+                    _mini_episode_feedback_timestamps = _mini_episode_feedback_timestamps[1:]
+                
+                # do not load empty mini episodes
+                if len(_mini_episode_feedbacks) == 0 and \
+                    len(_mini_episode_feedback_timestamps) == 0:
+                    continue
+
                 self.mini_episode_data.append({
                     "video_id": video_id,
                     "mini_episode_id": _mini_episode_id,
