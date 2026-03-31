@@ -15,7 +15,7 @@ First download and extract the QEVD-FIT-COACH(-Benchmark/Competition) [here](htt
 - [Benchmark](https://softwarecenter.qualcomm.com/api/download/software/dataset/AIDataset/Qualcomm_Exercise_Video_Dataset/QEVD-FIT-COACH-Benchmark/QEVD-FIT-COACH-Benchmark.zip)
 - [VAR Competition](https://softwarecenter.qualcomm.com/api/download/software/dataset/AIDataset/Qualcomm_Exercise_Video_Dataset/QEVD-FIT-COACH-Competition-CVPR2025/QEVD-FIT-COACH-Competition-CVPR2025.zip)
 
-After extraction the `DOWNLOADS_ROOT` folder should contain the extracted files under the folders: `QEVD-FIT-COACH`, `QEVD-FIT-COACH-Benchmark`, `QEVD-FIT-COACH-Competition-CVPR2025` (You can choose to download one/all of the splits). Each of these folders should contain the following:
+After extraction the `DOWNLOADS_ROOT` folder should contain the extracted files under the folders: `QEVD-FIT-COACH`, `QEVD-FIT-COACH-Benchmark`, `QEVD-FIT-COACH-Competition` (You can choose to download one/all of the splits). Each of these folders should contain the following:
 - *feedbacks_long_range.json*: The json file containing the annotations. Details [here](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/QSC-QEVD-FIT-COACH-Dataset-Download-Instructions.pdf).
 - *long_range_videos*: Folder containing the videos and the associated timestamps when each frame was recorded.
 
